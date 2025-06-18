@@ -1,3 +1,58 @@
 spring:
   application:
     name: users
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        healthCheckPath: /api/management/health
+        healthCheckInterval: 10s
+        instanceId: users:${spring.application.instance-id:${random.value}}
+        service-name: users
+        register: true
+        deregister: true
+      config:
+        enabled: true
+        format: yaml
+        watch:
+          enabled: true
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      base-path: /api/management
+      exposure:
+        include:
+          [
+            'configprops',
+            'env',
+            'health',
+            'info',
+            'logfile',
+            'loggers',
+            'caches'
+          ]
+  endpoint:
+    health:
+      show-details: when_authorized
+      roles: 'ROLE_MANAGEMENT'
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState
+  info:
+    git:
+      mode: full
+    env:
+      enabled: true
+  health:
+    mail:
+      enabled: false # When using the MailService, configure an SMTP server and set this to true
