@@ -1,0 +1,13 @@
+services:
+  consul:
+    image: consul:1.15.4
+    container_name: consul
+    ports:
+      - "8500:8500"
+    command: consul agent -dev -ui -client 0.0.0.0 -log-level=INFO
+    networks:
+      - movietix-network
+
+networks:
+  movietix-network:
+    driver: bridge
